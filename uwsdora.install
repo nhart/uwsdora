@@ -1,8 +1,28 @@
 <?php
+
+
 /**
  * @file
- * Installs the handles database for UWS.
+ * Install hooks for the uwsdora module.
  */
+
+/**
+ * Implements hook_install().
+ *
+ * @see islandora_islandora_required_objects()
+ */
+function uwsdora_install() {
+  module_load_include('inc', 'islandora', 'includes/solution_packs');
+  islandora_install_solution_pack('uwsdora');
+  drupal_install_schema('uwsdora');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function uwsdora_uninstall() {
+  drupal_uninstall_schema('uwsdora');
+}
 
 /**
  * Implements hook_schema().
@@ -32,6 +52,7 @@ function uwsdora_schema() {
         'default' => 0,
       ),
     ),
+
     'primary key' => array('pid', 'ds'),
   );
   return $schema;

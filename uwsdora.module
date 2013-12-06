@@ -31,3 +31,32 @@ function uwsdora_ir_citationcmodel_islandora_view_object_alter(AbstractObject &$
     );
   }
 }
+
+/**
+ * Implements hook_islandora_required_objects().
+ */
+function uwsdora_islandora_required_objects(IslandoraTuque $connection) {
+  $module_path = drupal_get_path('module', 'uwsdora');
+
+  $research_collection = $connection->repository->constructObject('uws:researchCollection');
+  $research_collection->owner = 'fedoraAdmin';
+  $research_collection->label = 'UWS Research Collection';
+  $research_collection->models = 'islandora:collectionCModel';
+  $research_collection->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', 'islandora:root');
+
+  $thesis_collection = $connection->repository->constructObject('uws:thesisCollection');
+  $thesis_collection->owner = 'fedoraAdmin';
+  $thesis_collection->label = 'UWS Thesis Collection';
+  $thesis_collection->models = 'islandora:collectionCModel';
+  $thesis_collection->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', 'islandora:root');
+
+  return array(
+    'uwsdora' => array(
+      'title' => 'University of Western Sydney',
+      'objects' => array(
+        $research_collection,
+        $thesis_collection,
+      ),
+    ),
+  );
+}
