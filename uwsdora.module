@@ -36,8 +36,6 @@ function uwsdora_ir_citationcmodel_islandora_view_object_alter(AbstractObject &$
  * Implements hook_islandora_required_objects().
  */
 function uwsdora_islandora_required_objects(IslandoraTuque $connection) {
-  $module_path = drupal_get_path('module', 'uwsdora');
-
   $research_collection = $connection->repository->constructObject('uws:researchCollection');
   $research_collection->owner = 'fedoraAdmin';
   $research_collection->label = 'UWS Research Collection';
@@ -59,4 +57,17 @@ function uwsdora_islandora_required_objects(IslandoraTuque $connection) {
       ),
     ),
   );
+}
+
+/**
+ * Implements hook_process_islandora_solr_metadata_display().
+ */
+function uwsdora_process_islandora_solr_metadata_display(array &$variables) {
+  $emptied_solr_fields = array();
+  foreach ($emptied_solr_fields as $field_name => $values) {
+    if (!empty($values['value'])) {
+      $emptied_solr_fields[$field_name] = $values;
+    }
+  }
+  $variables['solr_fields'] = $emptied_solr_fields;
 }
