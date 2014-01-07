@@ -64,7 +64,7 @@ function uwsdora_islandora_required_objects(IslandoraTuque $connection) {
  */
 function uwsdora_process_islandora_solr_metadata_display(array &$variables) {
   $emptied_solr_fields = array();
-  foreach ($emptied_solr_fields as $field_name => $values) {
+  foreach ($variables['solr_fields'] as $field_name => $values) {
     if (!empty($values['value'])) {
       $emptied_solr_fields[$field_name] = $values;
     }
