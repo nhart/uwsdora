@@ -96,3 +96,13 @@ function uwsdora_process_islandora_solr_metadata_display(array &$variables) {
   }
   $variables['solr_fields'] = $emptied_solr_fields;
 }
+
+/**
+ * Implements hook_views_api().
+ */
+function uwsdora_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'uwsdora') . '/views',
+  );
+}
