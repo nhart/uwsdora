@@ -4,5 +4,7 @@ package = Islandora
 dependencies[] = islandora
 dependencies[] = islandora_solr
 dependencies[] = islandora_solr_metadata
+dependencies[] = islandora_marcxml
 core = 7.x
 version = 7.x-dev
+

@@ -351,7 +351,7 @@
 		</dc:language>
 	</xsl:template>
 
-	<xsl:template match="mods:relatedItem[mods:titleInfo | mods:name | mods:identifier | mods:location | mods:originInfo | mods:note]">
+	<xsl:template match="mods:relatedItem[mods:titleInfo | mods:name | mods:identifier | mods:location | mods:originInfo | mods:note | mods:url]">
 		<xsl:choose>
 			<xsl:when test="@type='original'">
 				<dc:relation>
@@ -365,15 +365,16 @@
 				</dc:relation>
 			</xsl:when>
 
-  			<xsl:when test="@type='references'">
+  			<xsl:when test="@otherType='grant URL'">
 				<dc:relation>
-         	<!-- This is the Open Access Grant PURL to dc:relation -->
+         	<!-- This is the New Open Access Grant PURL to dc:relation -->
 					<xsl:for-each
-						select="mods:note[@type='grant_link']">
+						select="mods:url">
 							<xsl:value-of select="."/>
 					</xsl:for-each>
 				</dc:relation>
-			</xsl:when>
+			</xsl:when>      
+      
 			<xsl:when test="@type='host'">
 			    <xsl:for-each select="mods:originInfo">
 			        <dc:publisher>

@@ -1,7 +1,7 @@
 <xsl:stylesheet xmlns="http://www.loc.gov/mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim"
-	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	exclude-result-prefixes="xlink marc xsi" version="1.0">
-	<xsl:include href="http://www.loc.gov/standards/marcxml/xslt/MARC21slimUtils.xsl"/> 
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	exclude-result-prefixes="xlink marc" version="1.0">
+	<xsl:include href="http://www.loc.gov/standards/marcxml/xslt/MARC21slimUtils.xsl"/>
 	<xsl:output encoding="UTF-8" indent="yes" method="xml"/>
 	<xsl:strip-space elements="*"/>
 
@@ -110,8 +110,8 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 			</xsl:when>
 			<xsl:otherwise> -->
 			<xsl:when test="//marc:record">
-				<mods version="3.4">
-				<!--	xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">  -->
+				<mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.4"
+					xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
 					
          	<xsl:for-each select="//marc:record"> 
 						<xsl:call-template name="marcRecord"/>

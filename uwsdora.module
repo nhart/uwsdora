@@ -98,11 +98,28 @@ function uwsdora_process_islandora_solr_metadata_display(array &$variables) {
 }
 
 /**
- * Implements hook_views_api().
- */
-function uwsdora_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module', 'uwsdora') . '/views',
-  );
+* Implements hook_menu_alter().
+*/
+function uwsdora_menu_alter(&$items) {
+  $items['islandora/object/%islandora_object/view_mods_as_marcxml']['access callback'] = 'uwsdora_tab_removal_access_callback';
+  $items['islandora/object/%islandora_object/view_mods_as_marcxml']['access arguments'] = array(2);
+  $items['islandora/object/%islandora_object/download_mods_as_marcxml']['access callback'] = 'uwsdora_tab_removal_access_callback';
+  $items['islandora/object/%islandora_object/download_mods_as_marcxml']['access arguments'] = array(2);
+}
+
+/**
+* Callback to only allow the admin user to see the marcxml tab.
+*/
+function uwsdora_tab_removal_access_callback($object) {
+  module_load_include('module', 'islandora_marcxml');
+
+  // Load the currently logged in user.
+  global $user;
+
+  // Check if the user has the 'administrator' role.
+  if (in_array('administrator', $user->roles)) {
+    return islandora_marcxml_access_callback($object);
+  }
+
+  return FALSE;
 }

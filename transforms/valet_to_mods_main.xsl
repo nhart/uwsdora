@@ -2314,14 +2314,14 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
            <affiliation><xsl:apply-templates select="creator_institution"/></affiliation>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:if test="creator_affiliation  ='Staff'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-          <xsl:if test="creator_affiliation  ='Student'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-          <xsl:if test="creator_affiliation  ='Student - Non HDR'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-          <xsl:if test="creator_affiliation  ='Adjunct'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-          <xsl:if test="creator_affiliation  ='Emeritus'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-          <xsl:if test="creator_affiliation  ='Visiting Fellow'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-          <xsl:if test="creator_affiliation  ='External'"><affiliation>non UWS</affiliation></xsl:if>
-          <xsl:if test="creator_affiliation  ='Pre-UWS'"><affiliation>non UWS</affiliation></xsl:if>          							
+          <xsl:if test="creator_affiliation  ='Staff'"><affiliation>Western Sydney University</affiliation></xsl:if>
+          <xsl:if test="creator_affiliation  ='Student'"><affiliation>Western Sydney University</affiliation></xsl:if>
+          <xsl:if test="creator_affiliation  ='Student - Non HDR'"><affiliation>Western Sydney University</affiliation></xsl:if>
+          <xsl:if test="creator_affiliation  ='Adjunct'"><affiliation>Western Sydney University</affiliation></xsl:if>
+          <xsl:if test="creator_affiliation  ='Emeritus'"><affiliation>Western Sydney University</affiliation></xsl:if>
+          <xsl:if test="creator_affiliation  ='Visiting Fellow'"><affiliation>Western Sydney University</affiliation></xsl:if>
+          <xsl:if test="creator_affiliation  ='External'"><affiliation>non Western</affiliation></xsl:if>
+          <xsl:if test="creator_affiliation  ='Pre-Western'"><affiliation>non Western</affiliation></xsl:if>          							
 	      </xsl:otherwise>
     </xsl:choose> 
 
@@ -2451,7 +2451,28 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
           <note type="fund_source"><xsl:apply-templates select="fund_source"/></note>
        </xsl:when>
     </xsl:choose>    
-    </relatedItem>   
+    </relatedItem>  
+    
+        <!-- Related Grant(s) -->
+    <xsl:choose>
+      <xsl:when test="grant">
+  <relatedItem otherType="grant URL">
+<url>
+     <xsl:apply-templates select="grant"/>
+</url>
+</relatedItem>
+      </xsl:when>
+    </xsl:choose>
+    
+    <!-- Other Related Grant(s) -->
+    <xsl:apply-templates select="*[starts-with(local-name(),'grant_')]"/>
+    
+     <!-- Submit Comment -->
+    <xsl:choose>
+      <xsl:when test="not(comments ='')">         
+    <note><xsl:apply-templates select="comments"/></note>
+       </xsl:when>
+    </xsl:choose> 
     
       <!-- Record Info -->
     <xsl:choose>
@@ -2533,6 +2554,9 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
 	    </xsl:if>
 	   <xsl:if test="$rtype = 'Research Report'">
   	    	<xsl:call-template name="research_report"/>
+	    </xsl:if> 
+	   <xsl:if test="$rtype = 'Other'">
+  	    	<xsl:call-template name="other"/>
 	    </xsl:if> 
 	    <!-- <xsl:if test="$rtype = 'Thesis'">
   	    	<xsl:call-template name="thesis"/>
@@ -2660,6 +2684,15 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
           </url>
 		    </location>
       </xsl:when>
+    </xsl:choose>
+    
+    <!-- Book Scopus ID -->
+    <xsl:choose>
+      <xsl:when test="book_scopus_id">
+<identifier type="scopus">
+	        <xsl:apply-templates select="book_scopus_id"/>
+</identifier>
+      </xsl:when>
     </xsl:choose> 
     
     <!-- Book Abstract -->
@@ -2684,6 +2717,10 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
  <xsl:if test="book_commercial_publisher">
 <note type="commercial_publisher"><xsl:apply-templates select="book_commercial_publisher"/></note> 
 </xsl:if>
+
+     <xsl:if test="book_publisher_ERA_id">
+     <note type="book_publisher_ERA_id"><xsl:apply-templates select="book_publisher_ERA_id"/></note> 
+     </xsl:if>
 
   </xsl:template>
   
@@ -2802,6 +2839,15 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
           </url>
 		    </location>
       </xsl:when>
+    </xsl:choose>
+    
+    <!-- Book O Scopus ID -->
+    <xsl:choose>
+      <xsl:when test="book_o_scopus_id">
+<identifier type="scopus">
+	        <xsl:apply-templates select="book_o_scopus_id"/>
+</identifier>
+      </xsl:when>
     </xsl:choose> 
     
     <!-- Book O Abstract -->
@@ -2903,6 +2949,15 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
       </xsl:when>
     </xsl:choose>
     
+    <!-- Chapter Scopus ID -->
+    <xsl:choose>
+      <xsl:when test="chapter_scopus_id">
+<identifier type="scopus">
+	        <xsl:apply-templates select="chapter_scopus_id"/>
+</identifier>
+      </xsl:when>
+    </xsl:choose>       
+    
     <!-- Chapter Abstract -->
     <xsl:choose>
       <xsl:when test="chapter_abstract">
@@ -2911,16 +2966,6 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
         </abstract>
       </xsl:when>
     </xsl:choose>
-    
-    <!-- Chapter Scopus ID -->
-<!--    <xsl:choose>
-      <xsl:when test="chapter_scopus_id">
-<identifier type="scopus">
-	        <xsl:apply-templates select="chapter_scopus_id"/>
-</identifier>
-      </xsl:when>
-    </xsl:choose>  -->  
-    
     
     <!-- Chapter Rights -->
     <xsl:choose>
@@ -3060,7 +3105,10 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
      <xsl:if test="chapter_book_commercial_publisher">
      <note type="commercial_publisher"><xsl:apply-templates select="chapter_book_commercial_publisher"/></note> 
      </xsl:if>
-   
+
+     <xsl:if test="chapter_book_publisher_ERA_id">
+     <note type="chapter_book_publisher_ERA_id"><xsl:apply-templates select="chapter_book_publisher_ERA_id"/></note> 
+     </xsl:if>   
      
   </xsl:template>
   
@@ -3152,6 +3200,15 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
       </xsl:when>
     </xsl:choose>
     
+    <!-- Chapter Scopus ID -->
+    <xsl:choose>
+      <xsl:when test="chapter_o_scopus_id">
+<identifier type="scopus">
+	        <xsl:apply-templates select="chapter_o_scopus_id"/>
+</identifier>
+      </xsl:when>
+    </xsl:choose>    
+    
     <!-- Chapter O Abstract -->
     <xsl:choose>
       <xsl:when test="chapter_o_abstract">
@@ -3160,16 +3217,6 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
         </abstract>
       </xsl:when>
     </xsl:choose>
-    
-    <!-- Chapter O Scopus ID -->
-<!--    <xsl:choose>
-      <xsl:when test="chapter_o_scopus_id">
-<identifier type="scopus">
-	        <xsl:apply-templates select="chapter_o_scopus_id"/>
-</identifier>
-      </xsl:when>
-    </xsl:choose>  -->  
-    
     
     <!-- Chapter O Rights -->
     <xsl:choose>
@@ -3309,7 +3356,6 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
      <xsl:if test="chapter_book_o_commercial_publisher">
      <note type="commercial_publisher"><xsl:apply-templates select="chapter_book_o_commercial_publisher"/></note> 
      </xsl:if>
-    
     
       
   </xsl:template>
@@ -3517,6 +3563,11 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
            <roleTerm authority="marcrelator" type="text">Event place</roleTerm>
         </role>
 		</name>
+    
+          <!-- HERDC information - Conference ERA id -->
+ <xsl:if test="conference_ERA_id">
+<note type="conference_era_id"><xsl:apply-templates select="conference_ERA_id"/></note> 
+</xsl:if>    
     
 
     <!-- Conference Proceedings ISBN -->
@@ -4727,6 +4778,116 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
       </xsl:when>
     </xsl:choose>
   
+  </xsl:template>
+
+  <!-- ................................Other Template....................................-->
+
+  <xsl:template name="other">
+
+    <!-- Resource type - Other --> 
+<genre authority="local">other</genre>
+
+  <!-- ................................Other..............................................-->
+          
+    <!-- Other Title -->
+    <xsl:choose>
+      <xsl:when test="other_title">
+        <titleInfo>
+          <title>
+            	<xsl:apply-templates select="other_title"/>
+	        </title>
+        </titleInfo>
+      </xsl:when>
+    </xsl:choose>
+
+    <!-- Other English Title -->
+    <xsl:choose>
+      <xsl:when test="other_english_title">
+        <titleInfo type="alternative">
+          <title>
+           	<xsl:apply-templates select="other_english_title"/>
+	        </title>
+        </titleInfo>
+      </xsl:when>
+    </xsl:choose>    
+    
+    <!--  Other Language -->    
+    <xsl:choose>
+      <xsl:when test="other_language">
+        <language>
+          <languageTerm authority="iso639-2b" type="code">
+           	<xsl:apply-templates select="other_language"/>
+          </languageTerm>
+        </language>
+      </xsl:when>
+    </xsl:choose>
+    
+    
+    <!-- Other Abstract -->
+    <xsl:choose>
+      <xsl:when test="other_abstract">
+            <abstract>
+	        <xsl:apply-templates select="other_abstract"/>
+            </abstract>
+      </xsl:when>
+    </xsl:choose>
+		
+    <!-- Other URL -->
+    <xsl:choose>
+      <xsl:when test="other_url">
+		<location>
+			<url displayLabel="electronic resource" usage="primary display">
+	        <xsl:apply-templates select="other_url"/>
+            </url>
+		</location>
+      </xsl:when>
+    </xsl:choose>  
+     
+    
+  <!-- ................................Other Source Template (Article is in) ....................................-->    
+    
+    <!-- Other Source Title / Refereed / Volume / Issue / Pages -->
+    <xsl:choose>
+      <xsl:when test="other_source_title">
+		<relatedItem type="host">
+			<titleInfo>
+				<title>
+          <xsl:apply-templates select="other_source_title"/>
+        </title>
+      </titleInfo>
+
+         
+     <!-- Date -->
+    <xsl:choose>
+      <xsl:when test="year">
+		<originInfo>
+<dateIssued>
+	        <xsl:apply-templates select="year"/>
+</dateIssued>
+</originInfo>
+      </xsl:when>
+    </xsl:choose>        
+         
+                 <part>
+            <detail type="volume">
+               <number><xsl:value-of select="other_volume"/></number>
+            </detail>
+            <detail type="issue">
+               <number><xsl:value-of select="other_issue"/></number>
+            </detail>
+            <detail type="number">
+               <number><xsl:value-of select="other_number"/></number>
+            </detail>
+            <extent unit="page">
+               <start><xsl:value-of select="other_page_from"/></start>
+               <end><xsl:value-of select="other_page_to"/></end>
+            </extent>
+		</part>
+		
+        </relatedItem>
+      </xsl:when>
+    </xsl:choose>
+
   </xsl:template>
   
   <!-- ................................Thesis Template......................................................-->
@@ -6346,14 +6507,14 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
      <xsl:choose>
         <xsl:when test="//*[local-name()=$institution]"><affiliation><xsl:apply-templates select="//*[local-name()=$institution]"/></affiliation></xsl:when>
       <xsl:otherwise>
-<xsl:if test="//*[local-name()=$affiliation] ='Staff'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-<xsl:if test="//*[local-name()=$affiliation] = 'Student'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-<xsl:if test="//*[local-name()=$affiliation] ='Student - Non HDR'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-<xsl:if test="//*[local-name()=$affiliation] = 'Adjunct'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-<xsl:if test="//*[local-name()=$affiliation] = 'Emeritus'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-<xsl:if test="//*[local-name()=$affiliation] = 'Visiting Fellow'"><affiliation>University of Western Sydney</affiliation></xsl:if>
-<xsl:if test="//*[local-name()=$affiliation] ='External'"><affiliation>non UWS</affiliation></xsl:if> 
-<xsl:if test="//*[local-name()=$affiliation] ='Pre-UWS'"><affiliation>non UWS</affiliation></xsl:if>					
+<xsl:if test="//*[local-name()=$affiliation] ='Staff'"><affiliation>Western Sydney University</affiliation></xsl:if>
+<xsl:if test="//*[local-name()=$affiliation] = 'Student'"><affiliation>Western Sydney University</affiliation></xsl:if>
+<xsl:if test="//*[local-name()=$affiliation] ='Student - Non HDR'"><affiliation>Western Sydney University</affiliation></xsl:if>
+<xsl:if test="//*[local-name()=$affiliation] = 'Adjunct'"><affiliation>Western Sydney University</affiliation></xsl:if>
+<xsl:if test="//*[local-name()=$affiliation] = 'Emeritus'"><affiliation>Western Sydney University</affiliation></xsl:if>
+<xsl:if test="//*[local-name()=$affiliation] = 'Visiting Fellow'"><affiliation>Western Sydney University</affiliation></xsl:if>
+<xsl:if test="//*[local-name()=$affiliation] ='External'"><affiliation>non Western</affiliation></xsl:if> 
+<xsl:if test="//*[local-name()=$affiliation] ='Pre-Western'"><affiliation>non Western</affiliation></xsl:if>					
 	  </xsl:otherwise>
     </xsl:choose> 
 
@@ -6386,6 +6547,15 @@ mods/v3" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:xlink="http://www.w3.
 	        <xsl:value-of select="."/>
 </topic>
 </subject>
+  </xsl:template>   
+  
+    <!-- Multiple Related Grant(s) -->
+  <xsl:template match="*[starts-with(local-name(),'grant_')]">
+<relatedItem otherType="grant URL">
+<url>
+	        <xsl:value-of select="."/>
+</url>
+</relatedItem>
   </xsl:template>   
   
   <!-- Multiple Chapter Book Editors -->
