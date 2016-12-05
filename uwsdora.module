@@ -66,7 +66,7 @@ function uwsdora_islandora_required_objects(IslandoraTuque $connection) {
   $datastream->label = 'Thumbnail';
   $datastream->mimetype = 'image/png';
   $datastream->setContentFromFile("$islandora_path/images/folder.png", FALSE);
-  $thesis_collection->ingestDatastream($datastream);
+  $thesis_collection->ingestDatastream($datastream)
   // Collection Policy Datastream.
   $datastream = $thesis_collection->constructDatastream('COLLECTION_POLICY', 'X');
   $datastream->label = 'Collection policy';
@@ -105,4 +105,52 @@ function uwsdora_views_api() {
     'api' => 3,
     'path' => drupal_get_path('module', 'uwsdora') . '/views',
   );
+}
+
+/**
+ * Implements hook_convert_mods_to_citeproc_jsons_alter().
+ */
+function uwsdora_convert_mods_to_citeproc_jsons_alter($output, $mods, $pages) {
+  module_load_include('inc', 'citeproc', 'includes/converter');
+ 
+  $output['volume'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number');
+  $output['issue'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number');
+   
+  $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='pages']");
+  
+  if (empty($pages)) {
+    $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='page']");
+  }
+
+  $pages = (!empty($pages) ? $pages[0] : NULL);
+  if ($pages) {
+    add_mods_namespace($pages);
+
+    $total = $pages->xpath('mods:total');
+    $total = (!empty($total) ? (string) $total[0] : NULL);
+
+    $list = $pages->xpath('mods:list');
+    $list = (!empty($list) ? (string) $list[0] : NULL);
+
+    $start = $pages->xpath('mods:start');
+    $start = (!empty($start) ? (string) $start[0] : NULL);
+
+    $end = $pages->xpath('mods:end');
+    $end = (!empty($end) ? (string) $end[0] : NULL);
+
+    if ($total) {
+      $output = $total;
+    }
+    elseif ($list) {
+      $output = $list;
+    }
+    elseif ($start) {
+      $output = $start;
+      if ($end) {
+        $output .= "-" . $end;
+      }
+    }
+  }
+
+  return $output;
 }
