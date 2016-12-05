@@ -66,7 +66,7 @@ function uwsdora_islandora_required_objects(IslandoraTuque $connection) {
   $datastream->label = 'Thumbnail';
   $datastream->mimetype = 'image/png';
   $datastream->setContentFromFile("$islandora_path/images/folder.png", FALSE);
-  $thesis_collection->ingestDatastream($datastream)
+  $thesis_collection->ingestDatastream($datastream);
   // Collection Policy Datastream.
   $datastream = $thesis_collection->constructDatastream('COLLECTION_POLICY', 'X');
   $datastream->label = 'Collection policy';
@@ -111,13 +111,14 @@ function uwsdora_views_api() {
  * Implements hook_convert_mods_to_citeproc_jsons_alter().
  */
 function uwsdora_convert_mods_to_citeproc_jsons_alter($output, $mods, $pages) {
+  // Custom read paths for citeproc
   module_load_include('inc', 'citeproc', 'includes/converter');
- 
+
   $output['volume'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number');
   $output['issue'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number');
-   
+
   $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='pages']");
-  
+
   if (empty($pages)) {
     $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='page']");
   }
