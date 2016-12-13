@@ -109,49 +109,51 @@ function uwsdora_views_api() {
 
 /**
  * Implements hook_convert_mods_to_citeproc_jsons_alter().
+ *
+ * @see citeproc/includes/converter.inc::convert_mods_to_citeproc_json_page()
  */
 function uwsdora_convert_mods_to_citeproc_jsons_alter(&$output, $mods) {
-  module_load_include('inc', 'citeproc', 'includes/converter');
+  $data = function($mods) {
+    $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='pages']");
 
-  $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='pages']");
-
-  if (empty($pages)) {
-    $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='page']");
-  }
-
-  $pages = (!empty($pages) ? $pages[0] : NULL);
-  if ($pages) {
-    add_mods_namespace($pages);
-
-    $total = $pages->xpath('mods:total');
-    $total = (!empty($total) ? (string) $total[0] : NULL);
-
-    $list = $pages->xpath('mods:list');
-    $list = (!empty($list) ? (string) $list[0] : NULL);
-
-    $start = $pages->xpath('mods:start');
-    $start = (!empty($start) ? (string) $start[0] : NULL);
-
-    $end = $pages->xpath('mods:end');
-    $end = (!empty($end) ? (string) $end[0] : NULL);
-
-    if ($total) {
-      $data = $total;
+    if (empty($pages)) {
+      $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='page']");
     }
-    elseif ($list) {
-      $data = $list;
-    }
-    elseif ($start) {
-      $data = $start;
 
-      if ($end) {
-        $data .= "-" . $end;
+    $pages = (!empty($pages) ? $pages[0] : NULL);
+    if ($pages) {
+      add_mods_namespace($pages);
+
+      $total = $pages->xpath('mods:total');
+      $total = (!empty($total) ? (string) $total[0] : NULL);
+
+      $list = $pages->xpath('mods:list');
+      $list = (!empty($list) ? (string) $list[0] : NULL);
+
+      $start = $pages->xpath('mods:start');
+      $start = (!empty($start) ? (string) $start[0] : NULL);
+
+      $end = $pages->xpath('mods:end');
+      $end = (!empty($end) ? (string) $end[0] : NULL);
+
+      if ($total) {
+        $output = $total;
       }
-    }
-  }
+      elseif ($list) {
+        $output = $list;
+      }
+      elseif ($start) {
+        $output = $start;
 
-  // Alter readpaths and use newly processed page information.
-  $output['page'] = $data;
+        if ($end) {
+          $output .= "-" . $end;
+        }
+      }
+      return $output;
+    }
+  };
+
+  $output['page'] = $data($mods);
   $output['volume'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number');
   $output['issue'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number');
 }
