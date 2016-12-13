@@ -109,11 +109,10 @@ function uwsdora_views_api() {
 
 /**
  * Implements hook_convert_mods_to_citeproc_jsons_alter().
- *
- * @see citeproc/includes/converter.inc::convert_mods_to_citeproc_json_page()
  */
 function uwsdora_convert_mods_to_citeproc_jsons_alter(&$output, $mods) {
-  $data = function($mods) {
+  // @see citeproc/includes/converter.inc::convert_mods_to_citeproc_json_page()
+  $extract_page_info = function($mods) {
     $pages = $mods->xpath("//mods:mods[1]/mods:relatedItem[@type='host']/mods:part/mods:extent[@unit='pages']");
 
     if (empty($pages)) {
@@ -153,7 +152,7 @@ function uwsdora_convert_mods_to_citeproc_jsons_alter(&$output, $mods) {
     }
   };
 
-  $output['page'] = $data($mods);
+  $output['page'] = $extract_page_info($mods);
   $output['volume'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number');
   $output['issue'] = (int) convert_mods_to_citeproc_json_query($mods, '//mods:mods[1]/mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number');
 }
