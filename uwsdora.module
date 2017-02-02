@@ -179,7 +179,7 @@ function uwsdora_islandora_view_object_alter(&$object, &$rendered) {
       $title_alternative = (isset($node)) ? $node->textContent : "";
 
       if (!empty($title) || !empty($title_alternative)) {
-        drupal_set_title(t("<span class='uwsdora-mods-title'>@title1</span><br/><span class='uwsdora-mods-title-alternative'>@title2</span>", array('@title1' => $title, '@title2' => $title_alternative)), PASS_THROUGH);
+        drupal_set_title(t("<span class='uwsdora-mods-title'>@title1</span><br/> <span class='uwsdora-mods-title-alternative'>@title2</span>", array('@title1' => $title, '@title2' => $title_alternative)), PASS_THROUGH);
       }
     }
   }
