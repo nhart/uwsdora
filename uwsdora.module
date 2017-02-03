@@ -158,7 +158,7 @@ function uwsdora_convert_mods_to_citeproc_jsons_alter(&$output, $mods) {
 }
 
 /**
- * Implements hook_islandora_object_view().
+ * Implements hook_islandora_view_object_alter().
  */
 function uwsdora_islandora_view_object_alter(&$object, &$rendered) {
 
@@ -170,16 +170,11 @@ function uwsdora_islandora_view_object_alter(&$object, &$rendered) {
       $xpath = new DOMXpath($document);
       $xpath->registerNamespace('mods', 'http://www.loc.gov/mods/v3');
 
-      $results = $xpath->query('mods:titleInfo[not (contains(@type, "alternative"))]/mods:title');
-      $node = $results->item(0);
-      $title = (isset($node)) ? $node->textContent : "";
+      $title = $xpath->evaluate('normalize-space(/mods:mods/mods:titleInfo[not(@type)]/mods:title)');
+      $title_alternative = $xpath->evaluate('normalize-space(/mods:mods/mods:titleInfo[@type="alternative"]/mods:title)');
 
-      $results = $xpath->query('mods:titleInfo[contains(@type, "alternative")]/mods:title');
-      $node = $results->item(0);
-      $title_alternative = (isset($node)) ? $node->textContent : "";
-
-      if (!empty($title) || !empty($title_alternative)) {
-        drupal_set_title(t("<span class='uwsdora-mods-title'>@title1</span><br/> <span class='uwsdora-mods-title-alternative'>@title2</span>", array('@title1' => $title, '@title2' => $title_alternative)), PASS_THROUGH);
+      if (!empty($title) && !empty($title_alternative)) {
+        drupal_set_title(t("<span class='uwsdora-mods-title'>@title1</span><br/><span class='uwsdora-mods-title-alternative'>@title2</span>", array('@title1' => $title, '@title2' => $title_alternative)), PASS_THROUGH);
       }
     }
   }
