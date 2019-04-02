@@ -21,7 +21,7 @@ function uwsdora_ir_citationcmodel_islandora_view_object_alter(AbstractObject &$
     }
     $output['citation.tab']['metadata'] = array(
       '#markup' => $config_defined,
-      '#weight' => $weight++,
+      '#weight' => $weight + 1,
       '#attached' => array(
         'js' => array(
           'misc/form.js',
