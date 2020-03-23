@@ -30,6 +30,41 @@ function uwsdora_ir_citationcmodel_islandora_view_object_alter(AbstractObject &$
       ),
     );
   }
+
+  // Have the google scholar link open in a new tab.
+  $markup = $rendered['citation.tab']['google_scholar_search']['#markup'];
+  preg_match_all('~<a(.*?)href="([^"]+)"(.*?)>~', $markup, $matches);
+  $link = l(
+    t('Search for this publication on Google Scholar'),
+      $matches[2][0],
+      array(
+        'attributes' => array(
+        'class' => 'scholar-google-scholar-search-link',
+        'target' => '_blank',
+      ),
+    )
+  );
+  $rendered['citation.tab']['google_scholar_search']['#markup'] = $link;
+}
+
+/**
+ * Implements hook_CMODEL_PID_islandora_object_view_alter().
+ */
+function uwsdora_ir_thesiscmodel_islandora_view_object_alter(AbstractObject &$object, &$output) {
+  // Have the google scholar link open in a new tab.
+  $markup = $rendered['citation.tab']['google_scholar_search']['#markup'];
+  preg_match_all('~<a(.*?)href="([^"]+)"(.*?)>~', $markup, $matches);
+  $link = l(
+    t('Search for this publication on Google Scholar'),
+      $matches[2][0],
+      array(
+        'attributes' => array(
+        'class' => 'scholar-google-scholar-search-link',
+        'target' => '_blank',
+      ),
+    )
+  );
+  $rendered['citation.tab']['google_scholar_search']['#markup'] = $link;
 }
 
 /**
