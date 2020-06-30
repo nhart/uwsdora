@@ -48,14 +48,22 @@ function uwsdora_ir_citationcmodel_islandora_view_object_alter(AbstractObject &$
   );
   $output['citation.tab']['google_scholar_search']['#markup'] = $link;
 
-  // Adding PDF Download Link
-  $default_viewer = variable_get('islandora_scholar_viewers', array('default' => 'none',));
-  $default_viewer = $default_viewer['default'];
-  if (isset($object['PDF']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PDF']) && ($default_viewer == 'none') && !isset($output['citation.tab']['pdf_download']['#markup'])) {
-    $filename = str_replace(":", "_", $object->id);
+  // Adding PDF Download Link.
+  $default_viewer = variable_get('islandora_scholar_viewers', array('default' => 'none'));
+  if (isset($object['PDF']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PDF']) &&
+    $default_viewer['default'] == 'none' &&
+    !isset($output['citation.tab']['pdf_download']['#markup'])
+  ) {
     $output['citation.tab']['pdf_download'] = array(
       '#type' => 'item',
-      '#markup' => l(t('Download PDF'), "islandora/object/$object->id/datastream/PDF/download/citation.pdf", array('attributes' => array('class' => 'scholar-pdf-download    -link'))),
+      '#markup' => l(
+        t('Download PDF'), "islandora/object/$object->id/datastream/PDF/download/citation.pdf",
+        array(
+          'attributes' => array(
+            'class' => 'scholar-pdf-download-link',
+          ),
+        )
+      ),
       '#weight' => $output['citation.tab']['pdf_download']['#weight'],
     );
   }
