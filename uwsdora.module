@@ -66,6 +66,18 @@ function uwsdora_ir_citationcmodel_islandora_view_object_alter(AbstractObject &$
       ),
       '#weight' => $output['citation.tab']['pdf_download']['#weight'],
     );
+
+    if (isset($object['PREVIEW']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['PREVIEW'])) {
+      $preview_weight = $output['citation.tab']['preview']['#weight'];
+      $output['citation.tab']['preview'] = array(
+        '#theme' => 'image',
+        '#attributes' => array(
+          'alt' => t('PDF Preview'),
+        ),
+        '#path' => "islandora/object/$object->id/datastream/PREVIEW/view",
+        '#weight' => $preview_weight,
+      );
+    }
   }
 }
 
